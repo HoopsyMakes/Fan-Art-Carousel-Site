@@ -43,12 +43,20 @@ export const addCreator = spacetimedb.reducer(
 
 export const addImage = spacetimedb.reducer(
   {
-    creator: t.string(), data: t.array(t.u8()), mimetype: t.string(), uploadedAt: t.timestamp()
+    creator: t.string(),
+    data: t.array(t.u8()),
+    mimetype: t.string(),
   },
-  (ctx, { creator, data, mimetype, uploadedAt }) => {
-    ctx.db.image.insert({ creator, id: BigInt(0), data, mimetype, uploadedAt })
+  (ctx, { creator, data, mimetype }) => {
+    ctx.db.image.insert({
+      creator,
+      id: 0n,
+      data,
+      mimetype,
+      uploadedAt: ctx.timestamp,
+    });
   }
-)
+);
 
 export const sayHello = spacetimedb.reducer(ctx => {
   for (const person of ctx.db.creator.iter()) {

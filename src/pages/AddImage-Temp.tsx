@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { reducers } from '../module_bindings';
-import { useSpacetimeDB, useReducer } from 'spacetimedb/react';
-import { Timestamp } from "spacetimedb";
+import { reducers } from "../module_bindings";
+import { useSpacetimeDB, useReducer } from "spacetimedb/react";
 
 export default function AddImageTemp() {
   const [info, setInfo] = useState<{
@@ -24,28 +23,36 @@ export default function AddImageTemp() {
 
     const arrayBuffer = await file.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
+    const previewUrl = URL.createObjectURL(file);
 
-    setInfo({
-      name: file.name,
-      mimetype: file.type,
-      size: file.size,
-      data,
-      previewUrl: URL.createObjectURL(file),
+    setInfo(previousInfo => {
+      if (previousInfo) {
+        URL.revokeObjectURL(previousInfo.previewUrl);
+      }
+
+      return {
+        name: file.name,
+        mimetype: file.type,
+        size: file.size,
+        data,
+        previewUrl,
+      };
     });
   };
-  const addToDB = async () => {
-    if (!connected) { return }
-    const uploadedAt: Timestamp = Timestamp.now();
-    addReducer({ creator: "Test", data: info!.data, mimetype: info!.mimetype, uploadedAt })
-  }
+
+  const addToDB = () => {
+    if (!connected || !info) return;
+
+    addReducer({
+      creator: "Test",
+      data: info.data,
+      mimetype: info.mimetype,
+    });
+  };
 
   return (
     <div>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-      />
+      <input type="file" accept="image/*" onChange={handleFileChange} />
 
       {info && (
         <div>
@@ -67,18 +74,17 @@ export default function AddImageTemp() {
             <strong>Bytes:</strong>
           </p>
 
-          <pre style={{ maxWidth: 300, overflow: "scroll", }}>
-            {Array.from(info.data.slice(0)).join(" ")}
+          <pre style={{ maxWidth: 300, overflow: "scroll" }}>
+            {Array.from(info.data).join(" ")}
           </pre>
 
-          <img
-            src={info.previewUrl}
-            alt="Preview"
-            style={{ maxWidth: 300 }}
-          />
+          <img src={info.previewUrl} alt="Preview" style={{ maxWidth: 300 }} />
+
           <br />
-          {/*disabled is as a backup, because you can never be too careful with databases #overthinking*/}
-          <button onClick={addToDB} disabled={info == null}>Add To DB</button>
+
+          <button onClick={addToDB} disabled={!info || !connected}>
+            Add To DB
+          </button>
         </div>
       )}
     </div>

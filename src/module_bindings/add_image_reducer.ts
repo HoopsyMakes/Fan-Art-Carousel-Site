@@ -14,5 +14,4 @@ export default {
   creator: __t.string(),
   data: __t.byteArray(),
   mimetype: __t.string(),
-  uploadedAt: __t.timestamp(),
 };
