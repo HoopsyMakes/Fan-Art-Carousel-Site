@@ -1,0 +1,8 @@
+{
+  "dev": {
+    "run": "npm run dev"
+  },
+  "database": "fan-art-carousel-7edyb",
+  "server": "maincloud",
+  "module-path": "./spacetimedb"
+}
