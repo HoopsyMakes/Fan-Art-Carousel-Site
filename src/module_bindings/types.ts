@@ -17,11 +17,11 @@ export const Creator = __t.object("Creator", {
 export type Creator = __Infer<typeof Creator>;
 
 export const Image = __t.object("Image", {
+  imageName: __t.string(),
   creator: __t.string(),
   id: __t.u64(),
   data: __t.byteArray(),
   mimetype: __t.string(),
-  uploadedAt: __t.timestamp(),
 });
 export type Image = __Infer<typeof Image>;
 

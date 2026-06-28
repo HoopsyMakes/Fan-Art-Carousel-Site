@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={< Index />} />
-          <Route path="/asd" element={<AddImageTemp />} />
+          <Route path="/add" element={<AddImageTemp />} />
           <Route path="/carousel/:creator" element={<Carousel />} />
         </Routes>
       </BrowserRouter>

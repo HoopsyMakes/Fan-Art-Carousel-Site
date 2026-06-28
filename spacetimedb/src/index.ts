@@ -12,11 +12,11 @@ const spacetimedb = schema({
   image: table(
     { name: "image", public: true },
     {
+      imageName: t.string(),
       creator: t.string(),
       id: t.u64().primaryKey().autoInc(),
       data: t.array(t.u8()),  // Binary data stored inline
       mimetype: t.string(),
-      uploadedAt: t.timestamp(),
     }
   )
 });
@@ -43,17 +43,19 @@ export const addCreator = spacetimedb.reducer(
 
 export const addImage = spacetimedb.reducer(
   {
+    imageName: t.string(),
     creator: t.string(),
     data: t.array(t.u8()),
     mimetype: t.string(),
   },
-  (ctx, { creator, data, mimetype }) => {
+  (ctx, { imageName, creator, data, mimetype }) => {
+
     ctx.db.image.insert({
+      imageName,
       creator,
       id: 0n,
       data,
       mimetype,
-      uploadedAt: ctx.timestamp,
     });
   }
 );

@@ -11,9 +11,9 @@ import {
 } from "spacetimedb";
 
 export default __t.row({
+  imageName: __t.string().name("image_name"),
   creator: __t.string(),
   id: __t.u64().primaryKey(),
   data: __t.byteArray(),
   mimetype: __t.string(),
-  uploadedAt: __t.timestamp().name("uploaded_at"),
 });

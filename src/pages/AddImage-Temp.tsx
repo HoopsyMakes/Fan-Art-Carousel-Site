@@ -44,6 +44,7 @@ export default function AddImageTemp() {
     if (!connected || !info) return;
 
     addReducer({
+      imageName: info.name,
       creator: "Test",
       data: info.data,
       mimetype: info.mimetype,

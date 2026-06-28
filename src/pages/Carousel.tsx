@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { tables } from "../module_bindings";
 import { useTable } from "spacetimedb/react";
+import "./Carousel.css"
 
 function imageDataToArrayBuffer(data: Uint8Array | ArrayLike<number>): ArrayBuffer {
   const bytes = data instanceof Uint8Array ? data : Uint8Array.from(data);
@@ -13,6 +14,8 @@ function imageDataToArrayBuffer(data: Uint8Array | ArrayLike<number>): ArrayBuff
 export default function Carousel() {
   const params = useParams();
   const creatorParam = params.creator ?? "";
+
+  const [index, setIndex] = useState<number>(0)
 
   const imageQuery = useMemo(
     () => tables.image.where(image => image.creator.eq(creatorParam)),
@@ -36,13 +39,18 @@ export default function Carousel() {
     });
   }, [images]);
 
+  const imagesRef = useRef(images);
+  useEffect(() => { imagesRef.current = images; }, [images]);
   useEffect(() => {
-    return () => {
-      for (const image of imageUrls) {
-        URL.revokeObjectURL(image.url);
+    const interval = setInterval(() => {
+      const currentImages = imagesRef.current;
+      if (currentImages.length > 0) {
+        setIndex((prev) => (prev + 1) % currentImages.length);
       }
-    };
-  }, [imageUrls]);
+    }, 5000);
+    return () => clearInterval(interval);
+
+  }, []);
 
   if (!isReady) {
     return <p>Loading images...</p>;
@@ -54,14 +62,13 @@ export default function Carousel() {
 
   return (
     <div>
-      {imageUrls.map(image => (
-        <img
-          key={image.id}
-          src={image.url}
-          alt={`${creatorParam} fan art`}
-          style={{ maxWidth: 300 }}
-        />
-      ))}
+      <img
+        key={imageUrls[index].id}
+        src={imageUrls[index]?.url}
+        alt={`${creatorParam} fan art`}
+        style={{ maxWidth: 300 }}
+        className="image"
+      />
     </div>
   );
 }
