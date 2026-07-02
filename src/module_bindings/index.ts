@@ -35,14 +35,15 @@ import {
 
 // Import all reducer arg schemas
 import AddCreatorReducer from "./add_creator_reducer";
-import AddImageReducer from "./add_image_reducer";
+import AddDurlReducer from "./add_durl_reducer";
+import RemoveDurlReducer from "./remove_durl_reducer";
 import SayHelloReducer from "./say_hello_reducer";
 
 // Import all procedure arg schemas
 
 // Import all table schema definitions
 import CreatorRow from "./creator_table";
-import ImageRow from "./image_table";
+import DurlRow from "./durl_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -55,23 +56,24 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, CreatorRow),
-  image: __table({
-    name: 'image',
+  durl: __table({
+    name: 'discordurl',
     indexes: [
-      { accessor: 'id', name: 'image_id_idx_btree', algorithm: 'btree', columns: [
+      { accessor: 'id', name: 'discordurl_id_idx_btree', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'image_id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'discordurl_id_key', constraint: 'unique', columns: ['id'] },
     ],
-  }, ImageRow),
+  }, DurlRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
   __reducerSchema("add_creator", AddCreatorReducer),
-  __reducerSchema("add_image", AddImageReducer),
+  __reducerSchema("add_durl", AddDurlReducer),
+  __reducerSchema("remove_durl", RemoveDurlReducer),
   __reducerSchema("say_hello", SayHelloReducer),
 );
 

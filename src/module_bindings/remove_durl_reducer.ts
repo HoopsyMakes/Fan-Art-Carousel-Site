@@ -10,10 +10,7 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export default __t.row({
-  imageName: __t.string().name("image_name"),
-  creator: __t.string(),
-  id: __t.u64().primaryKey(),
-  data: __t.byteArray(),
-  mimetype: __t.string(),
-});
+export default {
+  id: __t.option(__t.u64()),
+  url: __t.option(__t.string()),
+};

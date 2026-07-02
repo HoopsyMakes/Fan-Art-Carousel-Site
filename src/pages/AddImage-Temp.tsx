@@ -3,87 +3,36 @@ import { reducers } from "../module_bindings";
 import { useSpacetimeDB, useReducer } from "spacetimedb/react";
 
 export default function AddImageTemp() {
-  const [info, setInfo] = useState<{
-    name: string;
-    mimetype: string;
-    size: number;
-    data: Uint8Array;
-    previewUrl: string;
-  } | null>(null);
+
+  const [dURL, setDURL] = useState<string>("")
+  const [previewURL, setPreviewURL] = useState<string>("")
 
   const conn = useSpacetimeDB();
   const { isActive: connected } = conn;
-  const addReducer = useReducer(reducers.addImage);
+  const addReducer = useReducer(reducers.addDurl);
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const arrayBuffer = await file.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-    const previewUrl = URL.createObjectURL(file);
-
-    setInfo(previousInfo => {
-      if (previousInfo) {
-        URL.revokeObjectURL(previousInfo.previewUrl);
-      }
-
-      return {
-        name: file.name,
-        mimetype: file.type,
-        size: file.size,
-        data,
-        previewUrl,
-      };
-    });
-  };
-
-  const addToDB = () => {
-    if (!connected || !info) return;
-
+  const addDURLToDB = () => {
+    if (!connected || dURL !== "" || dURL !== undefined) return;
     addReducer({
-      imageName: info.name,
       creator: "Test",
-      data: info.data,
-      mimetype: info.mimetype,
+      url: dURL,
     });
-  };
+  }
 
   return (
     <div>
-      <input type="file" accept="image/*" onChange={handleFileChange} />
-
-      {info && (
+      <label>Discord URL:</label>
+      <input type="text" onChange={(e) => { setDURL(e.target.value) }} value={dURL}></input>
+      <button onClick={() => setPreviewURL(dURL)}>Preview Image</button>
+      {previewURL !== "" && previewURL !== undefined && (
         <div>
           <h3>Image Info</h3>
 
-          <p>
-            <strong>Name:</strong> {info.name}
-          </p>
-
-          <p>
-            <strong>MIME Type:</strong> {info.mimetype}
-          </p>
-
-          <p>
-            <strong>Size:</strong> {info.size} bytes
-          </p>
-
-          <p>
-            <strong>Bytes:</strong>
-          </p>
-
-          <pre style={{ maxWidth: 300, overflow: "scroll" }}>
-            {Array.from(info.data).join(" ")}
-          </pre>
-
-          <img src={info.previewUrl} alt="Preview" style={{ maxWidth: 300 }} />
+          <img src={previewURL} alt="Preview" style={{ maxWidth: 800 }} />
 
           <br />
 
-          <button onClick={addToDB} disabled={!info || !connected}>
+          <button onClick={addDURLToDB} disabled={previewURL == "" || previewURL == undefined || !connected}>
             Add To DB
           </button>
         </div>

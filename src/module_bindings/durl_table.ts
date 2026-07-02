@@ -10,16 +10,8 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
-export const Creator = __t.object("Creator", {
-  name: __t.string(),
-  password: __t.string(),
-});
-export type Creator = __Infer<typeof Creator>;
-
-export const Discordurl = __t.object("Discordurl", {
+export default __t.row({
   creator: __t.string(),
   url: __t.string(),
-  id: __t.u64(),
+  id: __t.u64().primaryKey(),
 });
-export type Discordurl = __Infer<typeof Discordurl>;
-

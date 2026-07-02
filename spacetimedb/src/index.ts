@@ -8,15 +8,13 @@ const spacetimedb = schema({
       password: t.string(),
     }
   ),
-  /// filename scheme: creator-name.*
-  image: table(
-    { name: "image", public: true },
+  // unhashed discord image url
+  durl: table(
+    { name: "discordurl", public: true },
     {
-      imageName: t.string(),
       creator: t.string(),
+      url: t.string(),
       id: t.u64().primaryKey().autoInc(),
-      data: t.array(t.u8()),  // Binary data stored inline
-      mimetype: t.string(),
     }
   )
 });
@@ -41,24 +39,37 @@ export const addCreator = spacetimedb.reducer(
   }
 );
 
-export const addImage = spacetimedb.reducer(
+export const addDURL = spacetimedb.reducer(
   {
-    imageName: t.string(),
     creator: t.string(),
-    data: t.array(t.u8()),
-    mimetype: t.string(),
-  },
-  (ctx, { imageName, creator, data, mimetype }) => {
-
-    ctx.db.image.insert({
-      imageName,
+    url: t.string()
+  }, (ctx, { creator, url }) => {
+    ctx.db.durl.insert({
       creator,
+      url,
       id: 0n,
-      data,
-      mimetype,
-    });
+    })
   }
-);
+)
+
+export const removeDURL = spacetimedb.reducer(
+  { id: t.u64().optional(), url: t.string().optional() },
+  (ctx, { id, url }) => {
+    if (id !== undefined) {
+      ctx.db.durl.id.delete(id);
+      return;
+    }
+
+    if (url !== undefined && url !== '') {
+      for (const row of ctx.db.durl.iter()) {
+        if (row.url === url) {
+          ctx.db.durl.id.delete(row.id);
+          return;
+        }
+      }
+    }
+  }
+)
 
 export const sayHello = spacetimedb.reducer(ctx => {
   for (const person of ctx.db.creator.iter()) {

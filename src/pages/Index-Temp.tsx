@@ -72,6 +72,7 @@ export default function Index() {
           </ul>
         )}
       </div>
+      {/*<img src='https://cdn.discordapp.com/attachments/1517940437829025793/1522193201916543017/Temp-Avatar.png?ex=6a479464&is=6a4642e4&hm=a960a2f4e639c2cd64886af0d4dacda10f30448e179bdf862dd18b79a057151c&'></img>*/}
     </div>
   );
 }

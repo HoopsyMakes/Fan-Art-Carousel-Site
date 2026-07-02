@@ -11,8 +11,6 @@ import {
 } from "spacetimedb";
 
 export default {
-  imageName: __t.string(),
   creator: __t.string(),
-  data: __t.byteArray(),
-  mimetype: __t.string(),
+  url: __t.string(),
 };
